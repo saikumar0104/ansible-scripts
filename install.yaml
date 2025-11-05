@@ -1,0 +1,36 @@
+---
+- name: install and start apache web server
+  hosts: one
+  become: yes
+  vars:
+    apache_pkg: httpd
+    apache_ser: httpd
+  
+  tasks:
+    - name: install apache
+      yum:
+        name: "{{ apache_pkg }}"
+        state: present
+      tags: install_apache
+
+    - name: start ser
+      service:
+        name: "{{ apache_ser}}"
+        state: started
+        enabled: yes
+      tags: start_apache
+
+    - name: Deploy index.html
+      shell: echo "<h2>Hello from KSK</h2>" | tee /var/www/html/index.html 
+      notify: restart apache 
+
+    - name: Getting port
+      shell: cat /etc/httpd/conf/httpd.conf | grep "Listen 80" | awk '{print $2}'
+      register: apache_port
+
+  handlers:
+    - name: restart apache
+      service:  
+        name: "{{ apache_ser }}" 
+        state: restarted
+      

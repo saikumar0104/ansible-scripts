@@ -1,0 +1,18 @@
+---
+- name: Gather and display system facts
+  hosts: one
+  gather_facts: yes
+
+  tasks:
+    - name: Show OS family
+      debug:
+        msg: "This system belongs to {{ ansible_os_family }} family"
+
+    - name: Show distribution and version
+      debug:
+        msg: "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Show hostname and IP
+      debug:
+        msg: "{{ ansible_hostname }} - {{ ansible_default_ipv4.address }}"
+

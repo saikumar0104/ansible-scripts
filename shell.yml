@@ -1,0 +1,24 @@
+---
+- name: shell commands
+  hosts: one
+  become: yes
+  tasks:
+    - name: Free memory space 
+      shell: free -gh | awk 'NR==2{print $4}'
+      register: free_memory
+    - name: printing registered memort
+      debug:
+        msg: "{{ inventory_hostname }}: free memory = {{ free_memory.stdout_lines }}"
+      when: free_memory.stdout_lines | regex_replace('[^0-9]', '') | int > 300
+#       
+    - name: free Disk Space
+      shell: df -kh  | grep data1 | awk '{print $4}'
+      register: free_disk
+    - name: printing registered disk space
+      debug:
+        msg: "{{ inventory_hostname }}: free disk = {{ free_disk.stdout_lines }}"
+      when: free_disk.stdout_lines | regex_replace('[^0-9]', '') | int > 200 # regex removes all non-digits and converts to int
+
+#   - name: print var # if we print var then it will print dictionary so we need value for that in dictionary we see stdout or stdout_lines
+      debug:
+        var: free_disk     

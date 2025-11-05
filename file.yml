@@ -1,0 +1,19 @@
+---
+- name: Creating Directory and Files and copying
+  hosts: one
+  become: yes
+  tasks:
+    - name: creating Dir
+      file:
+        path: /tmp/ksk
+        state: directory
+        mode: 0755
+    - name: Creating file
+      file:
+        path: /tmp/ksk/jio.txt
+        state: touch
+        mode: 0755
+    - name: copy file from source
+      copy:
+        src: /tmp/ansible_practise/ping.yml
+        dest: /tmp/ksk/
